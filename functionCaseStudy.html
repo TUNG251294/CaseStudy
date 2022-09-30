@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" type="text/css" href="background.css">
+</head>
+<body>
+<canvas id="myCanvas" width="480" height="320"></canvas>
+<script>
+
+    let canvas = document.getElementById("myCanvas");
+    let ctx = canvas.getContext("2d");
+    let x = canvas.width / 2;
+    let y = canvas.height - 30;
+    let dx = 2;
+    let dy = -2;
+    const RADIUS = 10;
+    let rightPressed = false;
+    let leftPressed = false;
+    let score = 0;
+    let count = 0;
+
+    function Score() {
+        ctx.font = "16px Arial";
+        ctx.fillStyle = "black";
+        ctx.fillText(`Score: ${score}`, 8, 20);
+    }
+
+    document.addEventListener("keydown", keyDownHandler, false);
+    document.addEventListener("keyup", keyUpHandler, false);
+
+    function keyDownHandler(e) {
+        if (e.keyCode === 39) {
+            rightPressed = true;
+        } else if (e.keyCode === 37) {
+            leftPressed = true;
+        }
+    }
+
+    function keyUpHandler(e) {
+        if (e.keyCode === 39) {
+            rightPressed = false;
+        } else if (e.keyCode === 37) {
+            leftPressed = false;
+        }
+    }
+
+    const paddleHeight = 10;
+    const paddleWidth = 75;
+    let paddleX = (canvas.width - paddleWidth) / 2;
+
+    function Ball() {
+        ctx.beginPath();
+        ctx.arc(x, y, RADIUS, 0, Math.PI * 2);
+        ctx.fillStyle = "#868e96";
+        ctx.fill();
+        ctx.closePath();
+    }
+
+    function Replay(y) {
+        if (y) {
+            document.location.reload();
+            clearInterval(interval);
+        } else {
+            alert("Your Score: " + score);
+        }
+    }
+
+    function move() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        Ball();
+        Paddle();
+        Score()
+        count++
+        if (count % 100 === 0) {
+            score++
+        }
+        if (x + dx + RADIUS > canvas.width || x + dx - RADIUS < 0) {
+            dx = -dx;
+        }
+        if (y + dy - RADIUS < 0) {
+            dy = -dy;
+        } else if (y + dy + RADIUS > canvas.height) {
+            if (x > paddleX && x < paddleX + paddleWidth) {
+                dy = -dy;
+            } else {
+                let gameOver = confirm("GAME OVER! DO YOU REPLAY GAME?");
+                Replay(gameOver);
+
+            }
+        }
+        // function collisionDetection(){
+        //     if (x > paddleX && x < paddleX+paddleWidth && y + dy < canvas.height - paddleHeight && y + dy + RADIUS > canvas.height -RADIUS){}
+        //}
+        x += dx;
+        y += dy;
+
+        if (rightPressed) {
+            paddleX += 7;
+            if (paddleX + paddleWidth > canvas.width) {
+                paddleX = canvas.width - paddleWidth;
+            }
+        } else if (leftPressed) {
+            paddleX -= 7;
+            if (paddleX < 0) {
+                paddleX = 0;
+            }
+        }
+    }
+
+    function Paddle() {
+        ctx.beginPath();
+        ctx.rect(paddleX, canvas.height - paddleHeight, paddleWidth, paddleHeight);
+        ctx.fillStyle = "#6610f2"
+        ctx.fill();
+        ctx.closePath();
+    }
+
+    const interval = setInterval(move, 10);          //Hàm setInterval() lặp lại 1 khối đoạn mã tại mỗi 1 khoảng thời gian nhất định
+
+</script>
+</body>
+</html>

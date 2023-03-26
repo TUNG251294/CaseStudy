@@ -125,14 +125,22 @@ function Paddle(paddleX, width, height) {
             }
         }
     }
+}
 
+function collision(x,y,radius,paddleX,width,height){
+    let detection = false;
+    if (y + dy + BALL_RADIUS < canvas.height && y +dy + BALL_RADIUS+PADDLE_HEIGHT>canvas.height){
+        if(x>= paddleX && x <= paddleX+PADDLE_WIDTH){
+        detection = true;}
+
+    }
+    return detection;
 }
 
 let gameBoard = new GameBoard(GAME_BOARD_WIDTH, GAME_BOARD_HEIGHT);
 let ball = new Ball(x, y, BALL_RADIUS, GAME_RENDER_SPEED);
 let paddle = new Paddle(paddleX, PADDLE_WIDTH, PADDLE_HEIGHT);
 let scoreCell = new Score()
-
 
 function drawGame() {
     gameBoard.drawGameBoard(canvas);
